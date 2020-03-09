@@ -1,0 +1,12 @@
+.grid_var_template, .gvt 
+{
+    height: var(--gh,100%);
+    width: var(--gw,100%);
+    display: grid;
+    grid-template-rows: var(--gr,1fr);
+    grid-template-columns: var(--gc,1fr);
+    grid-auto-rows: var(--gar,invalid);
+    grid-auto-columns: var(--gac,invalid);
+    grid-gap: var(--gg,0px);
+    place-items: var(--gp,center);
+}
