@@ -4,10 +4,11 @@ let speechRecognitionList=null;
 
 export function cancel_listen()
 {
-    recognition.stop();
     grammar=null;
-    recognition=null;
     speechRecognitionList=null;
+
+    recognition.stop();
+    recognition=null;
 }
 
 export function listen_for(commands,callback)
@@ -17,8 +18,8 @@ export function listen_for(commands,callback)
 
     grammar = '#JSGF V1.0; grammar colors; public <command> = ' + commands.join(' | ') + ' ;'
 
-    recognition = new window.SpeechRecognition();
-    speechRecognitionList = new window.SpeechGrammarList();
+    recognition = new window.webkitSpeechRecognition();
+    speechRecognitionList = new window.webkitSpeechGrammarList();
 
     speechRecognitionList.addFromString(grammar, 1);
 
@@ -30,10 +31,13 @@ export function listen_for(commands,callback)
 
     recognition.onresult = (e) =>
     {
-        callback(e.results[0][0].transcript,event.results[0][0].confidence);
+        let i = e.resultIndex;
+        let r = event.results[i][0];
+        callback(r.transcript,r.confidence);
     }
 
-    recognition.onspeechend = function()  { }
+    recognition.onspeechend = function()  { if(grammar) recognition.start(); }
+    recognition.onend = function()  { if(grammar) recognition.start(); }
 
     recognition.onnomatch = () =>
     {

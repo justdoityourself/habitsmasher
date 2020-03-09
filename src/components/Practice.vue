@@ -1,11 +1,11 @@
 <template>
-  <div class=gvt style='--gr:1fr;--gc:64px 1fr 64px;' v-bind:style="{ background: current.color }">
+  <div class=gvt @click='finished' style='--gr:1fr;--gc:64px 1fr 64px;' v-bind:style="{ background: current.color }">
     <div class=gvt style='--gr:64px 1fr 64px;--gc:1fr;'>
       <div>
-        <v-icon size=48 @click=on_back>cancel</v-icon>
+        <v-icon size=48 @click.stop=on_back>cancel</v-icon>
       </div>
       <div></div>
-      <div></div>
+      <div style='font-weight:bold;font-size:24px;'>{{total_percent}}%</div>
     </div>
     <div class=gvt style='--gr:auto 1fr auto;--gc:1fr;'>
         <div style='font-weight:bold;font-size:24px;'>{{current.description}}</div>
@@ -17,13 +17,13 @@
 
     <div class=gvt style='--gr:64px 1fr 64px;--gc:1fr;'>
       <div>
-        <v-icon size=48 v-if=speak @click='speak=!speak;'>volume_off</v-icon>
-        <v-icon size=48 v-else @click='speak=!speak;'>volume_up</v-icon>
+        <v-icon size=48 v-if=speak @click.stop='speak=!speak;'>volume_off</v-icon>
+        <v-icon size=48 v-else @click.stop='speak=!speak;'>volume_up</v-icon>
       </div>
       <div></div>
       <div>
-        <v-icon size=48 v-if=buzz @click='buzz=!buzz;'>mdi-vibrate-off</v-icon>
-        <v-icon size=48 v-else @click='buzz=!buzz;'>mdi-vibrate</v-icon>
+        <v-icon size=48 v-if=buzz @click.stop='buzz=!buzz;'>mdi-vibrate-off</v-icon>
+        <v-icon size=48 v-else @click.stop='buzz=!buzz;'>mdi-vibrate</v-icon>
       </div>
     </div>
   </div>
@@ -33,6 +33,7 @@
 
   import * as tts from '../js/tts.js'
   import * as vcmd from '../js/voice_command.js'
+  import * as mcmd from '../js/motion_command.js'
 
   export default {
     name: 'Practice',
@@ -60,6 +61,10 @@
       remaining()
       {
         return this.format_timer(this.remaining_time);
+      },
+      total_percent()
+      {
+        return Math.floor((this.success+1) / this.attempts * 100);
       }
     },
 
@@ -70,6 +75,9 @@
       interval:null,
       speak:true,
       buzz:true,
+      attempts:0,
+      success:0,
+      detailed:{},
       current:
       {
         description:'',
@@ -105,12 +113,34 @@
       },
       voice_command(cmd,level)
       {
-        console.log(cmd,level);
-      },
-      event_callback()
-      {
-        if(this.time%this.rules.duration == 0)
+        if(level);
+        switch(cmd)
         {
+          case "done":
+          case "got it":
+            this.finished();
+            break;
+          default:
+            break;
+        }
+      },
+      motion_command()
+      {
+        console.log("here");
+        this.finished();
+      },
+      next()
+      {
+          this.attempts++;
+
+          if(this.current.name)
+          {
+            if(!(this.current.name in this.detailed))
+              this.detailed[this.current.name] = {attempts:0,success:0};
+
+            this.detailed[this.current.name].attempts ++;
+          }
+
           this.remaining_time = this.rules.duration;
 
           let idx = this.prev;
@@ -133,7 +163,25 @@
             let v = [this.decode_buzzer(this.current.buzz1),200,this.decode_buzzer(this.current.buzz2),200,this.decode_buzzer(this.current.buzz3)];
             window.navigator.vibrate(v);
           }
+      },
+      finished()
+      {
+        this.success++;
+
+        if(this.current.name)
+        {
+          if(!(this.current.name in this.detailed))
+            this.detailed[this.current.name] = {attempts:0,success:0};
+
+          this.detailed[this.current.name].success ++;
         }
+
+        this.next();
+      },
+      event_callback()
+      {
+        if(this.time%this.rules.duration == 0)
+          this.next();
         else
           this.remaining_time--;
 
@@ -143,6 +191,8 @@
 
     beforeDestroy()
     {
+      mcmd.stop_motion_polling();
+      vcmd.cancel_listen();
       clearInterval(this.interval);
     },
 
@@ -151,6 +201,7 @@
       this.event_callback();
       this.interval = setInterval(this.event_callback,1000);
 
+      mcmd.start_motion_polling(this.motion_command);
       vcmd.listen_for(["done","got it","finished","complete"],this.voice_command);
     }
   }

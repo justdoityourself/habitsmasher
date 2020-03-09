@@ -35,15 +35,10 @@
 
             <template v-slot:expanded-item="{ item, headers }">
               <td :colspan="headers.length">
-                <div class=gvt style='--gr:1fr 1fr; --gc:1fr;'>
-                  <div>{{item.description}}</div>
-                  <div class=gvt style='--gr:1fr; --gc:1fr 1fr;'>
-                    <span style='font-weight:bold;'>Buzz: {{item.buzz1}}  {{item.buzz2}} {{item.buzz3}}</span>
-                    <span style='font-weight:bold;'>
-                      Color:
-                      <div style='display:inline-block;cursor:pointer;height:18px;width:18px;' v-bind:style="{ background: item.color }" @click="editItem(item)"></div>
-                    </span>
-                  </div>
+                <div class=gvt style='--gr:1fr;--gc:1fr 18px 18px;'>
+                  <div style='justify-self:left;'>{{item.description}}</div>
+                  <v-icon small class="mr-2" @click="editItem(item)" > mdi-pencil </v-icon>
+                  <v-icon small @click="deleteItem(item)" > mdi-delete </v-icon>
                 </div>
               </td>
             </template>
@@ -73,7 +68,7 @@
       </div>
 
       <div class=gvt style='font-weight:bold;--gr:1fr; --gc:64px 1fr 64px; border-top: 1px solid green; margin-top:2px;'>
-        <div></div>
+        <v-icon size=38 style='cursor:pointer;' @click='settings_dialog=true'>settings</v-icon>
         <div v-if="selected.length">{{selected.length}} Strategies</div>
         <div v-else>Select Strategies to Continue</div>
         <v-icon v-if="selected.length" color=green size=48 style='cursor:pointer;' @click='on_play(selected,rules)'>play_arrow</v-icon>
@@ -134,6 +129,30 @@
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
           <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="settings_dialog" max-width="350px">
+      <v-card>
+        <v-list-item>
+          <v-list-item-avatar> 
+            <v-icon size=38>settings</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="headline">Settings</v-list-item-title>
+            <v-list-item-subtitle></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-card-text>
+          <div class=gvt style='--gr:64px 64px 1fr auto;--gc:1fr;'>
+            
+          </div>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="settings_dialog=false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -216,6 +235,7 @@
         duration:15,
         read_description:true,
       },
+      settings_dialog:false,
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -575,8 +595,8 @@
           icon:""
         },
       selected:[],
-      headers: 
-      [
+      headers: (window.matchMedia("(max-width: 800px)").matches)
+      ? [
           {
             text: 'Character',
             align: 'start',
@@ -584,11 +604,19 @@
             value: 'character',
           },
           { text: 'Name', value: 'name' },
-          //{ text: 'Description', value: 'description' },
-          //{ text: 'Color', value: 'color' },
-          //{ text: 'Buzz', value: 'buzz' },
-          //{ text: 'Actions', value: 'action', sortable: false },
           { text: 'Details', value: 'data-table-expand' },
+      ] : [
+          {
+            text: 'Character',
+            align: 'start',
+            sortable: false,
+            value: 'character',
+          },
+          { text: 'Name', value: 'name' },
+          { text: 'Description', value: 'description' },
+          { text: 'Color', value: 'color' },
+          { text: 'Buzz', value: 'buzz' },
+          { text: 'Actions', value: 'action', sortable: false },
       ],
       strats:
       [
