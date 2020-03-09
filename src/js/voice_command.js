@@ -33,7 +33,7 @@ export function listen_for(commands,callback)
     {
         let i = e.resultIndex;
         let r = event.results[i][0];
-        callback(r.transcript,r.confidence);
+        callback(r.transcript.trim(),r.confidence);
     }
 
     recognition.onend = recognition.onspeechend = function()  

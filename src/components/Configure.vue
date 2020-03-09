@@ -145,8 +145,16 @@
           </v-list-item-content>
         </v-list-item>
         <v-card-text>
-          <div class=gvt style='--gr:64px 64px 1fr auto;--gc:1fr;'>
-            
+          <div class=gvt style='--gr:auto auto auto auto;--gc:1fr;justify-items:left;'>
+            <v-switch v-model="rules.read_description" class="mx-2" label="Read Description"></v-switch>
+            <v-switch v-model="rules.read_name" class="mx-2" label="Read Name"></v-switch>
+            <v-switch v-model="rules.voice_command" class="mx-2" label="Voice Commands"></v-switch>
+            <v-switch v-model="rules.motion_command" class="mx-2" label="Motion Commands"></v-switch>
+            <v-switch v-model="rules.buzz" class="mx-2" label="Buzz"></v-switch>
+            <v-text-field style='position:relative;left:8px;' v-model="rules.duration" type="number" label="Task Duration ( Seconds )" prepend-icon="timelapse">
+              <template v-slot:append>
+              </template>
+            </v-text-field>
           </div>
         </v-card-text>
 
@@ -233,7 +241,11 @@
       rules:
       {
         duration:15,
-        read_description:true,
+        read_description:false,
+        voice_command:true,
+        read_name:true,
+        motion_command:false,
+        buzz:true,
       },
       settings_dialog:false,
       editedIndex: -1,

@@ -7,11 +7,12 @@
       <div></div>
       <div style='font-weight:bold;font-size:24px;'>{{total_percent}}%</div>
     </div>
-    <div class=gvt style='--gr:auto 1fr auto;--gc:1fr;'>
+    <div class=gvt style='--gr:auto 18px 1fr auto;--gc:1fr;'>
         <div style='font-weight:bold;font-size:24px;'>{{current.description}}</div>
-        <h1 class="display-2 font-weight-bold mb-3">
-          {{current.name}} <span style='font-weight:bold;font-size:18px;'>{{remaining}}</span>
-        </h1>
+        <div style='font-weight:bold;font-size:18px;'>{{msg}}</div>
+        <div style='font-size:32px;font-weight:bold;'>
+          <span style='font-weight:bold;font-size:14px;'>{{current_percent}}%</span> {{current.name}} <span style='font-weight:bold;font-size:14px;'>{{remaining}}</span>
+        </div>
         <div style='font-weight:bold;font-size:24px;'>{{timer}}</div>
     </div>
 
@@ -65,6 +66,14 @@
       total_percent()
       {
         return Math.floor((this.success+1) / this.attempts * 100);
+      },
+      current_percent()
+      {
+        if(!(this.current.name in this.detailed))
+          return "100";
+        let c = this.detailed[this.current.name];
+
+        return Math.floor((c.success) / c.attempts * 100);
       }
     },
 
@@ -73,11 +82,12 @@
       prev:-1,
       remaining_time:0,
       interval:null,
-      speak:true,
-      buzz:true,
       attempts:0,
       success:0,
       detailed:{},
+      msg:"",
+      speak:true,
+      buzz:true,
       current:
       {
         description:'',
@@ -114,15 +124,22 @@
       voice_command(cmd,level)
       {
         if(level);
+
         switch(cmd)
         {
           case "done":
           case "got it":
+          case "finished":
+          case "complete":
+            this.msg = cmd;
             this.finished();
             break;
           default:
+            this.msg = "? " + cmd + " ?";
             break;
         }
+
+        setTimeout(()=>this.msg="",2000);
       },
       motion_command()
       {
@@ -151,14 +168,12 @@
 
           this.current = this.selected[idx];
 
-          if(this.speak)
-          {
+          if(this.rules.read_name && this.speak)
             tts.SpeakText(this.current.name);
-            if(this.rules.read_description)
-              tts.SpeakText(this.current.description);
-          }
+          if(this.rules.read_description && this.speak)
+            tts.SpeakText(this.current.description);
           
-          if(this.buzz)
+          if(this.rules.buzz && this.buzz)
           {
             let v = [this.decode_buzzer(this.current.buzz1),200,this.decode_buzzer(this.current.buzz2),200,this.decode_buzzer(this.current.buzz3)];
             window.navigator.vibrate(v);
@@ -180,7 +195,7 @@
       },
       event_callback()
       {
-        if(this.time%this.rules.duration == 0)
+        if(!this.remaining_time)
           this.next();
         else
           this.remaining_time--;
@@ -191,8 +206,8 @@
 
     beforeDestroy()
     {
-      mcmd.stop_motion_polling();
-      vcmd.cancel_listen();
+      if(this.rules.motion_command) mcmd.stop_motion_polling();
+      if(this.rules.voice_command) vcmd.cancel_listen();
       clearInterval(this.interval);
     },
 
@@ -201,8 +216,8 @@
       this.event_callback();
       this.interval = setInterval(this.event_callback,1000);
 
-      mcmd.start_motion_polling(this.motion_command);
-      vcmd.listen_for(["done","got it","finished","complete"],this.voice_command);
+      if(this.rules.motion_command) mcmd.start_motion_polling(this.motion_command);
+      if(this.rules.voice_command) vcmd.listen_for(["done","got it","finished","complete"],this.voice_command);
     }
   }
 
