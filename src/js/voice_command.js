@@ -36,8 +36,17 @@ export function listen_for(commands,callback)
         callback(r.transcript,r.confidence);
     }
 
-    recognition.onspeechend = function()  { if(grammar) recognition.start(); }
-    recognition.onend = function()  { if(grammar) recognition.start(); }
+    recognition.onend = recognition.onspeechend = function()  
+    { 
+        if(grammar) 
+        {
+            try
+            {
+                recognition.start(); 
+            }
+            catch(e){ if(e); }
+        }
+    }
 
     recognition.onnomatch = () =>
     {

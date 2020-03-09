@@ -2,13 +2,13 @@
   <v-app>
     <v-app-bar v-if="stage!=3" app color="primary" dark height=28>
       
-      <h3 style='cursor:pointer;' @click='stage=1'>d8dataworks</h3>
+      <h3 style='cursor:pointer;' @click='open_link("https://www.youtube.com/channel/UC4kH4isGJvL2vWhH5JOWyVw")'>d8dataworks</h3>
 
       <v-spacer></v-spacer>
 
-      <v-icon style='cursor:pointer;margin-right:8px;'>mdi-github-circle</v-icon>
-      <v-icon size=22 style='cursor:pointer;margin-top:2px;margin-right:8px;'>mdi-discord</v-icon>
-      <v-icon size=28 style='cursor:pointer;margin-right:8px;'>mdi-youtube</v-icon>
+      <v-icon style='cursor:pointer;margin-right:8px;' @click='open_link("https://github.com/justdoityourself")'>mdi-github-circle</v-icon>
+      <v-icon size=22 style='cursor:pointer;margin-top:2px;margin-right:8px;' @click='open_link("https://discord.gg/YEhvW8E")'>mdi-discord</v-icon>
+      <v-icon size=28 style='cursor:pointer;margin-right:8px;' @click='open_link("https://www.youtube.com/channel/UC4kH4isGJvL2vWhH5JOWyVw")'>mdi-youtube</v-icon>
 
     </v-app-bar>
 
@@ -53,6 +53,10 @@ export default
     on_back()
     {
       this.stage--;
+    },
+    open_link(link)
+    {
+      window.open(link, "_blank");
     }
   },
 
@@ -68,23 +72,19 @@ export default
 <style>
     @import './css/vgrid.css';
 
-/* width */
     ::-webkit-scrollbar {
         width: 2px;
         height:10px;
     }
 
-    /* Track */
     ::-webkit-scrollbar-track {
         background: var(--scroll-track, #f1f1f1);
     }
 
-    /* Handle */
     ::-webkit-scrollbar-thumb {
         background: var(--scroll-thumb, #888);
     }
 
-/* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
         background: var(--scroll-thumb-hover, #555);
     }
