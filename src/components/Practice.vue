@@ -35,6 +35,7 @@
   import * as tts from '../js/tts.js'
   import * as vcmd from '../js/voice_command.js'
   import * as mcmd from '../js/motion_command.js'
+  import * as nslp from '../js/no_sleep.js'
 
   export default {
     name: 'Practice',
@@ -131,6 +132,7 @@
           case "got it":
           case "finished":
           case "complete":
+          case "next":
             this.msg = cmd;
             this.finished();
             break;
@@ -206,6 +208,8 @@
 
     beforeDestroy()
     {
+      nslp.leave_no_sleep();
+
       if(this.rules.motion_command) mcmd.stop_motion_polling();
       if(this.rules.voice_command) vcmd.cancel_listen();
       clearInterval(this.interval);
@@ -216,8 +220,10 @@
       this.event_callback();
       this.interval = setInterval(this.event_callback,1000);
 
+      nslp.enter_no_sleep();
+
       if(this.rules.motion_command) mcmd.start_motion_polling(this.motion_command);
-      if(this.rules.voice_command) vcmd.listen_for(["done","got it","finished","complete"],this.voice_command);
+      if(this.rules.voice_command) vcmd.listen_for(["next","done","got it","finished","complete"],this.voice_command);
     }
   }
 
