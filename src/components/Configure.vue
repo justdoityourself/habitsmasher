@@ -26,7 +26,7 @@
 
       <div class=gvt style='position:relative;'>
         <div style='position:absolute; width:100%; height:calc(100% - 16px); margin:8px 0px; overflow-y:auto;'>
-          <v-data-table :hide-default-footer="true" :search="character.name" :custom-filter="filter" :single-expand="true" show-expand style='width:100%; height:100%' :headers="headers" v-model="selected" :items="strats" :items-per-page="10" class="elevation-1" show-select item-key=name>
+          <v-data-table mobile-breakpoint=0 :hide-default-footer="true" :search="character.name" :custom-filter="filter" :single-expand="true" show-expand style='width:100%; height:100%' :headers="headers" v-model="selected" :items="strats" :items-per-page="10" class="elevation-1" show-select item-key=name>
             
             <template v-slot:item.action="{ item }">
               <v-icon small class="mr-2" @click="editItem(item)" > mdi-pencil </v-icon>
@@ -34,7 +34,18 @@
             </template>
 
             <template v-slot:expanded-item="{ item, headers }">
-              <td :colspan="headers.length">{{item.description}}</td>
+              <td :colspan="headers.length">
+                <div class=gvt style='--gr:1fr 1fr; --gc:1fr;'>
+                  <div>{{item.description}}</div>
+                  <div class=gvt style='--gr:1fr; --gc:1fr 1fr;'>
+                    <span style='font-weight:bold;'>Buzz: {{item.buzz1}}  {{item.buzz2}} {{item.buzz3}}</span>
+                    <span style='font-weight:bold;'>
+                      Color:
+                      <div style='display:inline-block;cursor:pointer;height:18px;width:18px;' v-bind:style="{ background: item.color }" @click="editItem(item)"></div>
+                    </span>
+                  </div>
+                </div>
+              </td>
             </template>
 
             <template v-slot:item.character="{ item }">
@@ -573,10 +584,10 @@
             value: 'character',
           },
           { text: 'Name', value: 'name' },
-          { text: 'Description', value: 'description' },
-          { text: 'Color', value: 'color' },
-          { text: 'Buzz', value: 'buzz' },
-          { text: 'Actions', value: 'action', sortable: false },
+          //{ text: 'Description', value: 'description' },
+          //{ text: 'Color', value: 'color' },
+          //{ text: 'Buzz', value: 'buzz' },
+          //{ text: 'Actions', value: 'action', sortable: false },
           { text: 'Details', value: 'data-table-expand' },
       ],
       strats:

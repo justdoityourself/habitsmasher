@@ -32,6 +32,7 @@
 <script>
 
   import * as tts from '../js/tts.js'
+  import * as vcmd from '../js/voice_command.js'
 
   export default {
     name: 'Practice',
@@ -99,8 +100,12 @@
           case 'medium':
             return 600;
           case 'long':
-            return 1100;
+            return 900;
         }
+      },
+      voice_command(cmd,level)
+      {
+        console.log(cmd,level);
       },
       event_callback()
       {
@@ -145,6 +150,8 @@
     {
       this.event_callback();
       this.interval = setInterval(this.event_callback,1000);
+
+      vcmd.listen_for(["done","got it","finished","complete"],this.voice_command);
     }
   }
 
