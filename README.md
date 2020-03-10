@@ -1,5 +1,7 @@
 # habitsmasher
 
+https://habitsmasher.d8data.io
+
 ## Project setup
 ```
 npm install
