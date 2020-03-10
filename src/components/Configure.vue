@@ -169,6 +169,8 @@
 
 <script>
 
+  import * as store from '../js/store.js'
+
   export default 
   {
     name: 'Configure',
@@ -182,6 +184,8 @@
     {
       new_strat()
       {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedItem.character= this.character.name;
         this.edit_dialog = true;
       },
 
@@ -214,6 +218,8 @@
           Object.assign(this.strats[this.editedIndex], this.editedItem)
         else
           this.strats.push(this.editedItem)
+
+        store.common.set("strats",this.strats);
       
         this.close()
       },
@@ -237,7 +243,22 @@
       }
     },
 
+    mounted()
+    {
+      store.common.get("strats").then(r=>
+      {
+        if(!r.length)
+        {
+          this.strats = this.default_strats;
+          store.common.set("strats",this.strats);
+        }
+        else
+          this.strats=r;
+      });
+    },
+
     data: () => ({
+      /*TODO Metrics*/
       rules:
       {
         duration:15,
@@ -259,13 +280,13 @@
         buzz3:"tick"
       },
       defaultItem: {
-        name: 'strategy',
-        description:'todo description',
+        name: 'name',
+        description:'description',
         character:'Random',
         color:'#FF0000',
-        buzz1:"",
-        buzz2:"",
-        buzz3:""
+        buzz1:"tick",
+        buzz2:"tick",
+        buzz3:"tick"
       },
       buzz_list:
       [
@@ -628,38 +649,66 @@
           { text: 'Description', value: 'description' },
           { text: 'Color', value: 'color' },
           { text: 'Buzz', value: 'buzz' },
-          { text: 'Actions', value: 'action', sortable: false },
+          //{ text: 'Actions', value: 'action', sortable: false },
+          { text: 'Details', value: 'data-table-expand' },
       ],
-      strats:
-      [
+      strats:[],
+      default_strats:[
         {
           character:"Random",
           name:"Tomahawk",
           description:"Empty hop grab",
-          color:'#FF0000',
+          color:'#B3C100',
+          buzz1:"tick",
+          buzz2:"short",
+          buzz3:"medium",
+        },
+        {
+          character:"Random",
+          name:"Read",
+          description:"Predict and counter",
+          color:'#1C4E80',
+          buzz1:"tick",
+          buzz2:"short",
+          buzz3:"tick",
+        },
+        {
+          character:"Random",
+          name:"Evade",
+          description:"Camp and run away",
+          color:'#A5D8DD',
+          buzz1:"tick",
+          buzz2:"tick",
+          buzz3:"long",
+        },
+        {
+          character:"Random",
+          name:"Bait",
+          description:"Fake attack and counter",
+          color:'#EA6A47',
+          buzz1:"short",
+          buzz2:"tick",
+          buzz3:"short",
+        },
+        {
+          character:"Random",
+          name:"Defensive Pressure",
+          description:"Close distance without attacking",
+          color:'#0091D5',
           buzz1:"tick",
           buzz2:"tick",
           buzz3:"tick",
         },
         {
           character:"Random",
-          name:"Snair",
-          description:"Short hop neutral air",
-          color:'#FF00FF',
+          name:"Offensive Pressure",
+          description:"Close distance with safe attacks",
+          color:'#23282D',
           buzz1:"tick",
-          buzz2:"tick",
+          buzz2:"medium",
           buzz3:"tick",
         },
-        {
-          character:"Banjo",
-          name:"mmm",
-          description:"Short hop neutral air",
-          color:'#FFFF00',
-          buzz1:"tick",
-          buzz2:"tick",
-          buzz3:"tick",
-        },
-      ]
+      ] //'#4CB5F5', '#1F3F49', '#D32D41', '#6AB187'
     }),
   }
 
