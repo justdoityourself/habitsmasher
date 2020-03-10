@@ -8,7 +8,9 @@
 
       <v-spacer></v-spacer>
 
-      <v-icon style='cursor:pointer;margin-right:8px;' @click='open_link("https://github.com/justdoityourself")'>mdi-github-circle</v-icon>
+      <span style='cursor:pointer;margin-right:16px;margin-top:2px;' @click=update>{{version}}</span>
+
+      <v-icon style='cursor:pointer;margin-right:8px;' @click='open_link("https://github.com/justdoityourself")'>mdi-git</v-icon>
       <v-icon size=22 style='cursor:pointer;margin-top:2px;margin-right:8px;' @click='open_link("https://discord.gg/YEhvW8E")'>mdi-discord</v-icon>
       <v-icon size=28 style='cursor:pointer;margin-right:8px;' @click='open_link("https://www.youtube.com/channel/UC4kH4isGJvL2vWhH5JOWyVw")'>mdi-youtube</v-icon>
 
@@ -62,35 +64,31 @@ export default
     {
       window.open(link, "_blank");
     },
-    update()
+    async update()
     {
-        pwa.RequestLatestVersion(1,async (e)=>
+        let v = await pwa.RequestLatestVersionDetails();
+        
+        if(v.version == pwa.current_version)
+          alert("You have the latest version");
+        else
         {
-            if(e)
-            {
-                console.log("Failed to request version information.");
-                return;
-            }
-
-            let v = await pwa.IsUpdateAvailable();
-
-            if(!v) return;
-
-            if(v && v[1].force)
-            {
-                pwa.Update();
-                return;
-            }
-
-            confirm(`Update ${v[1].version} avalable. Install now?`) && pwa.Update();
-        });
+          if(v.force)
+            pwa.Update();
+          else
+            confirm(`Update ${v.version} avalable. Install now?`) && pwa.Update();
+        }
     },
+  },
+
+  mounted()
+  {
   },
 
   data: () => ({
     rules:{},
     selected:[],
-    stage:1
+    stage:1,
+    version:pwa.current_version,
   }),
 };
 

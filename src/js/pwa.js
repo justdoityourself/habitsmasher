@@ -1,58 +1,35 @@
 /* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
 
-import * as store from './store.js'
+export let current_version = "1.0.1";
 
 export function Update()
 {
     navigator.serviceWorker.controller.postMessage("update");
 }
 
-export async function IsUpdateAvailable()
+export function RequestLatestVersionDetails(cb)
 {
-    let cdb = await store.common.get("pwaversion");
-    let ldb = await store.common.get("pwalatest");
+    var a,q;
+    var p = new Promise((_a,_q)=>{a=_a;q=_q;});
 
-    if(!cdb || !ldb)
-        return false;
-    
-    if(cdb.version == ldb.version)
-        return false;
-
-    return [cdb,ldb];
-}
-
-export function RequestLatestVersion(cdb,cb)
-{
     fetch(`version.json?o=${Date.now().toString(16)}`).then((r) =>
     {
         if(r.ok)
             return r.json();
-    }).then(async (v) =>
+    }).then((v) =>
     {
-        v.checked=Date.now();
-        if (!cdb) await store.common.set('pwaversion',v);
-        await store.common.set('pwalatest',v);
-
-        if(cb)cb();
+        if(cb) cb(v);
+        a(v)
     }).catch(e => 
     {
-        if(cb)cb(e);
+        if(cb)cb({version:current_version},e);
+        q(e);
 
         console.log("Failed to request latest version data from server",e);
     });
+
+    return p;
 }
-
-store.common.get("pwaversion",(cdb)=>
-{
-    if(cdb)
-    {
-        let now = Date.now();
-        if(cdb.checked + 24*60*60*1000 > now)
-            return;
-    }
-
-    RequestLatestVersion(cdb);
-});
 
 window.addEventListener('load', async () => 
 {
@@ -64,7 +41,6 @@ window.addEventListener('load', async () =>
                 switch(e.data)
                 {
                     case 'cache_cleared':
-                        store.common.del('pwaversion');
                         Update();
                         break;
                     default:
