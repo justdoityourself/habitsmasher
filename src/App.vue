@@ -1,3 +1,5 @@
+<!-- Copyright (C) 2020 D8DATAWORKS - All Rights Reserved -->
+
 <template>
   <v-app>
     <v-app-bar v-if="stage!=3" app color="primary" dark height=28>
@@ -28,6 +30,8 @@
 
 <script>
 
+import * as pwa from './js/pwa.js'
+
 import Hello from './components/Hello';
 import Configure from './components/Configure';
 import Practice from './components/Practice';
@@ -57,7 +61,30 @@ export default
     open_link(link)
     {
       window.open(link, "_blank");
-    }
+    },
+    update()
+    {
+        pwa.RequestLatestVersion(1,async (e)=>
+        {
+            if(e)
+            {
+                console.log("Failed to request version information.");
+                return;
+            }
+
+            let v = await pwa.IsUpdateAvailable();
+
+            if(!v) return;
+
+            if(v && v[1].force)
+            {
+                pwa.Update();
+                return;
+            }
+
+            confirm(`Update ${v[1].version} avalable. Install now?`) && pwa.Update();
+        });
+    },
   },
 
   data: () => ({

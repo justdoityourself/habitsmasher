@@ -1,3 +1,5 @@
+<!-- Copyright (C) 2020 D8DATAWORKS - All Rights Reserved -->
+
 <template>
   <div class=gvt>
     <div class=gvt style='max-width:800px;--gr:100px auto 100px;'>
@@ -259,6 +261,7 @@
 
     data: () => ({
       /*TODO Metrics*/
+      /*TODO PWA*/
       rules:
       {
         duration:15,

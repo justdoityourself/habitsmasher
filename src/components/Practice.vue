@@ -1,3 +1,5 @@
+<!-- Copyright (C) 2020 D8DATAWORKS - All Rights Reserved -->
+
 <template>
   <div class=gvt @click='finished' style='--gr:1fr;--gc:64px 1fr 64px;' v-bind:style="{ background: current.color }">
     <div class=gvt style='--gr:64px 1fr 64px;--gc:1fr;'>

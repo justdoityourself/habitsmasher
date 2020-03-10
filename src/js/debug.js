@@ -1,3 +1,5 @@
+/* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
+
 export let debug = true;
 export let timings = {};
 export let usage_count = 0;

@@ -1,3 +1,5 @@
+/* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
+
 export function enter_no_sleep()
 {
     try

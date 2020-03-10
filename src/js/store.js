@@ -1,3 +1,5 @@
+/* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
+
 export let store = function(name)
 {
     var that = this;

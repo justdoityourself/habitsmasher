@@ -1,3 +1,5 @@
+/* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
+
 //import * as o from './debug.js'
 
 let o = 

@@ -1,3 +1,5 @@
+<!-- Copyright (C) 2020 D8DATAWORKS - All Rights Reserved -->
+
 <template>
   <div class=gvt>
     <div class=gvt style='cursor:pointer;max-width:800px;--gr:200px 100px 50px 50px 100px; height:500px;'>

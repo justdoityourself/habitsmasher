@@ -1,3 +1,5 @@
+/* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
+
 let accelerometer = null;
 
 export function stop_motion_polling()

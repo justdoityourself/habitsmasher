@@ -1,3 +1,5 @@
+/* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
+
 let grammar=null;
 let recognition=null;
 let speechRecognitionList=null;
