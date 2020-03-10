@@ -80,9 +80,7 @@ export default
     },
   },
 
-  mounted()
-  {
-  },
+  mounted() { },
 
   data: () => ({
     rules:{},

@@ -1,6 +1,6 @@
 /* Copyright (C) 2020 D8DATAWORKS - All Rights Reserved */
 
-export let current_version = "1.0.1";
+export let current_version = "1.0.2";
 
 export function Update()
 {

@@ -249,7 +249,7 @@
     {
       store.common.get("strats").then(r=>
       {
-        if(!r.length)
+        if(!r || !r.length)
         {
           this.strats = this.default_strats;
           store.common.set("strats",this.strats);
