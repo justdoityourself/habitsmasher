@@ -41,7 +41,7 @@ window.addEventListener('load', async () =>
                 switch(e.data)
                 {
                     case 'cache_cleared':
-                        Update();
+                        window.location.reload(true);
                         break;
                     default:
                         console.log("Unknown Message from service worker.");
