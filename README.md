@@ -2,6 +2,10 @@
 
 https://habitsmasher.d8data.io
 
+## Introduction
+
+[![HSMB](http://img.youtube.com/vi/5nWw6xuScZU/0.jpg)](https://www.youtube.com/watch?v=5nWw6xuScZU "HSMB")
+
 ## Project setup
 ```
 npm install
